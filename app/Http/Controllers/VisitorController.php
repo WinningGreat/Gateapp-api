@@ -133,7 +133,8 @@ class VisitorController extends Controller
     ) {
         // validate the posted data
         $this->validate($request, [
-            'name'              => ['required', 'regex:/^([a-zA-Z]+)(\s[a-zA-Z]+)*$/'],
+
+            'name'              => 'required|string',
             'arrival_date'      => 'required|date',
             'car_plate_no'      => 'string|nullable',
             'purpose'           => 'string',
@@ -237,7 +238,9 @@ class VisitorController extends Controller
 
         // validate the posted data
         $this->validate($request, [
-            'name'              => ['regex:/^([a-zA-Z]+)(\s[a-zA-Z]+)*$/'],
+
+
+            'name'              => 'required|string',
             'arrival_date'      => 'required|date',
             'car_plate_no'      => 'string|nullable',
             'phone_no'          => 'string|nullable',
@@ -376,6 +379,33 @@ class VisitorController extends Controller
             $res['message'] = 'No Record found';
             return response()->json($res, 404);
         }
+    }
+
+     /**
+     * Fetch all Visit History for one visitor
+     *
+     * @param  integer
+     * @return JSON
+     */
+    public function fetchVisitorHistory($id)
+   {
+
+       //getting the visitor name from the table
+       $visitorsHistory = \App\Visitor::where('id',$id)->with('visitor_history','estate')->get();
+
+        if($visitorsHistory)
+       {
+           $res['status']  = true;
+           $res['message'] = "visit history for one user";
+           $res['history'] = $visitorsHistory;
+           return response()->json($res, 200);
+       }
+       else
+       {
+           $res['status']  = false;
+           $res['message'] = 'No Record found';
+           return response()->json($res, 404);
+       }
     }
 
 
