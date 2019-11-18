@@ -20,6 +20,7 @@ class VisitorArrivalNotification extends Notification implements ShouldQueue
     private $title;
     private $body;
     private $checkingOut;
+    private $type;
 
     /**
      * Create a new notification instance.
@@ -37,10 +38,13 @@ class VisitorArrivalNotification extends Notification implements ShouldQueue
         if($checkingOut)
         {
         $this->title = 'Visitor Checked Out';
-        $this->body = $this->visitor->name .  "has left,They are being checked out by {$this->gateman->name}";
+        $this->body = $this->visitor->name .  " has left,They are being checked out by {$this->gateman->name}";
+        $this->type = 'visitor_checked_out_notification';
+
         } else{
              $this->title = 'Visitor Arrival';
-        $this->body = $this->visitor->name .  "has arrived to see you \n They are being checked in by {$this->gateman->name}";
+        $this->body = $this->visitor->name .  " has arrived to see you \n They are being checked in by {$this->gateman->name}";
+        $this->type = 'visitor_arrival_notification';
         }
 
        
@@ -80,7 +84,7 @@ class VisitorArrivalNotification extends Notification implements ShouldQueue
                 'visitor_details' => $this->visitor->toArray(),
                 'gateman_details' => $this->gateman->toArray(),
                 'click_action' => 'FLUTTER_NOTIFICATION_ACTION',
-                'type' => 'visitor_arrival_notification'
+                'type' => $this->type,
             ])
             ->priority(FcmMessage::PRIORITY_HIGH);
 
